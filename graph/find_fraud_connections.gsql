@@ -1,0 +1,32 @@
+USE GRAPH FraudGraph
+
+CREATE OR REPLACE QUERY find_fraud_connections(VERTEX<Transaction> start_tx, INT depth=3) FOR GRAPH FraudGraph {
+    /*
+      This query traverses the graph from a suspicious transaction to find 
+      shared infrastructure (Devices, IPs) and identifies other connected transactions and accounts.
+    */
+    
+    // 1. Start from the flagged transaction
+    Start = {start_tx};
+    
+    // 2. Hop 1: Get the Devices and IPs used by this transaction
+    DevicesAndIPs = SELECT t FROM Start:s -((HAS_DEVICE|FROM_IP):e)- :t;
+    
+    // 3. Hop 2: Find all other Transactions sharing these Devices/IPs
+    RelatedTx = SELECT t FROM DevicesAndIPs:s -((HAS_DEVICE|FROM_IP):e)- Transaction:t
+                WHERE t != start_tx;
+                
+    // 4. Hop 3: Find Accounts/Customers that made those related transactions
+    RelatedCustomers = SELECT c FROM RelatedTx:s -(MADE_TRANSACTION:e)- Customer:c;
+    
+    // Calculate aggregate risk based on connected transactions
+    SumAccum<DOUBLE> @total_value_at_risk;
+    RelatedTx = SELECT s FROM RelatedTx:s 
+                ACCUM s.@total_value_at_risk += s.transaction_amt;
+    
+    PRINT DevicesAndIPs;
+    PRINT RelatedTx;
+    PRINT RelatedCustomers;
+}
+
+// INSTALL QUERY find_fraud_connections

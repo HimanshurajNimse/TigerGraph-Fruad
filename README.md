@@ -1,6 +1,6 @@
 # 🔍 FraudLens AI - TigerGraph GraphRAG Agent
 
-[![Watch the Demo](https://img.youtube.com/vi/cs-Tc8nTyoc/maxresdefault.jpg)](https://youtu.be/cs-Tc8nTyoc)
+[![Watch the Demo](https://i.postimg.cc/VvJ3wGkn/fa08e3ce-0c7c-450e-8d78-0c09fe886c8e.png)](https://youtu.be/cs-Tc8nTyoc)
 
 **🎥 [Watch the Demo Video](https://youtu.be/cs-Tc8nTyoc)** · **📖 [Read the Technical Blog Post](https://dev.to/himanshurajnimse/fraudlens-ai-an-autonomous-graph-agent-that-investigates-financial-crime-4l16)**
 

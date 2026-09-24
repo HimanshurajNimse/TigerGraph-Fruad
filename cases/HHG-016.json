@@ -1,0 +1,22 @@
+{
+    "case_id": "HHG-016",
+    "target_transaction": "T-990016",
+    "risk_score": 0.78,
+    "internal_investigation_record": [
+        "Initiating GraphRAG traversal...",
+        "Tool Executed: get_connected_entities",
+        "TigerGraph traversal complete. Found 4 shared IP addresses and 2 linked SSNs across a 3-hop network.",
+        "Tool Executed: calculate_blast_radius",
+        "BLAST RADIUS ALERT: Aggregated network exposure over $450,000."
+    ],
+    "evidence": "Graph network confirms 4 shared IPs and 2 linked SSNs.",
+    "findings": "Confirmed synthetic identity cluster with massive blast radius.",
+    "decisions": "Execute Immediate Account Freeze.",
+    "actions_taken": "Core Banking API invoked to block transaction. SAR automatically generated.",
+    "written_to_graph": true,
+    "suspicious_activity_report_required": true,
+    "next_best_action": {
+        "before_additional_evidence": "Immediate freeze based on cryptographic graph evidence.",
+        "after_additional_evidence": "N/A - graph evidence is sufficient for L1 execution."
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "case_id": "HHG-003",
+    "target_transaction": "T-990003",
+    "risk_score": 0.2,
+    "internal_investigation_record": [
+        "Initiating GraphRAG traversal...",
+        "Tool Executed: get_connected_entities",
+        "TigerGraph traversal complete. No shared IP addresses or anomalies found within a 3-hop radius.",
+        "Tool Executed: calculate_blast_radius",
+        "Minimal network exposure ($0). Transaction is isolated."
+    ],
+    "evidence": "No shared connections in TigerGraph.",
+    "findings": "Transaction is within normal parameters.",
+    "decisions": "Clear transaction. No further action needed.",
+    "actions_taken": "Transaction approved (L1 Autonomous).",
+    "written_to_graph": true,
+    "suspicious_activity_report_required": false,
+    "next_best_action": {
+        "before_additional_evidence": "Approve transaction autonomously.",
+        "after_additional_evidence": "N/A - no evidence required."
+    }
+}

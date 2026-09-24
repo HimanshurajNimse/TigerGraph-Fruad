@@ -1,0 +1,22 @@
+{
+    "case_id": "HHG-010",
+    "target_transaction": "T-990010",
+    "risk_score": 0.64,
+    "internal_investigation_record": [
+        "Initiating GraphRAG traversal...",
+        "Tool Executed: get_connected_entities",
+        "TigerGraph traversal complete. Found 1 shared IP address.",
+        "Tool Executed: request_additional_evidence",
+        "Step-up authentication requested. Device fingerprint remains inconclusive."
+    ],
+    "evidence": "1 shared IP address detected across 2 hops.",
+    "findings": "Borderline anomaly. Step-up auth inconclusive.",
+    "decisions": "Escalate to L2 Analyst.",
+    "actions_taken": "Requested step-up auth (OTP) from user. Sent to human analyst queue.",
+    "written_to_graph": true,
+    "suspicious_activity_report_required": false,
+    "next_best_action": {
+        "before_additional_evidence": "Request step-up authentication (OTP).",
+        "after_additional_evidence": "Escalate to L2 Analyst for manual review."
+    }
+}

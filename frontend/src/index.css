@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#060913] text-gray-100 antialiased font-sans;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl;
+  }
+  
+  .glass-card {
+    @apply bg-white/[0.02] hover:bg-white/[0.04] backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  }
+  
+  .neon-border {
+    box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.3), 0 0 15px rgba(99, 102, 241, 0.2);
+  }
+  
+  .neon-border-red {
+    box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.3), 0 0 15px rgba(239, 68, 68, 0.2);
+  }
+}
+
+/* Glowing Orb Animation for Landing Page */
+.orb-container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  animation: pulse-ring 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.orb-1 { width: 100%; height: 100%; animation-delay: 0s; box-shadow: 0 0 50px rgba(99, 102, 241, 0.1); }
+.orb-2 { width: 75%; height: 75%; animation-delay: -1s; border-color: rgba(99, 102, 241, 0.3); }
+.orb-3 { width: 50%; height: 50%; animation-delay: -2s; border-color: rgba(99, 102, 241, 0.5); background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%); }
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
+}

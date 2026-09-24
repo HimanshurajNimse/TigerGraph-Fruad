@@ -34,9 +34,9 @@ class TigerGraphClient:
                 )
                 if self.host != "http://localhost":
                     self.conn.getToken(self.conn.createSecret())
-            print(f"✅ Successfully connected to TigerGraph: {self.graphname}")
+            print(f"Successfully connected to TigerGraph: {self.graphname}")
         except Exception as e:
-            print(f"⚠️ TigerGraph Connection Warning: {e}")
+            print(f"TigerGraph Connection Warning: {e}")
             self.conn = None
 
     def get_connected_entities(self, transaction_id: str, max_hops: int = 3):

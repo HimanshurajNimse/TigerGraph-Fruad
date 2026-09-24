@@ -1,12 +1,12 @@
 import os
 from langchain_community.vectorstores import FAISS
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 
 class KnowledgeBase:
     def __init__(self):
-        # We use Gemini's fast embedding model
-        self.embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        # We use a robust local embedding model to avoid API limits and 404s
+        self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         self.policy_store = None
         self.case_store = None
         self._initialize_stores()

@@ -5,34 +5,63 @@ import operator
 from dotenv import load_dotenv
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage, AIMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, END
 
 # Import real tools including the standout Blast Radius tool
-from .tools import get_connected_entities, search_case_memory, check_fraud_policy, calculate_blast_radius
+from .tools import (
+    get_connected_entities, 
+    search_case_memory, 
+    check_fraud_policy, 
+    calculate_blast_radius,
+    create_and_update_case,
+    request_additional_evidence,
+    execute_resolution_action,
+    update_case_memory
+)
 
 load_dotenv()
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.1)
+
+# 1. Define the Tools Node
+tools = [
+    get_connected_entities, 
+    search_case_memory, 
+    check_fraud_policy, 
+    calculate_blast_radius,
+    create_and_update_case,
+    request_additional_evidence,
+    execute_resolution_action,
+    update_case_memory
+]
+tool_node = ToolNode(tools)
+
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", temperature=0.1)
+llm_with_tools = llm.bind_tools(tools)
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add]
     case_id: str
     target_transaction: str
     risk_score: float
-    evidence: dict
-    uncertainty_level: str
-    recommended_actions: list
-
-tools = [get_connected_entities, search_case_memory, check_fraud_policy, calculate_blast_radius]
-llm_with_tools = llm.bind_tools(tools)
+    recommended_actions: list[str]
 
 def investigate_trigger(state: AgentState):
-    sys_msg = SystemMessage(content=
-        "You are an elite Agentic Fraud Investigator powered by TigerGraph. "
-        "Your job is to analyze transactions, request graph evidence, assess uncertainty, and recommend the next best action. "
-        "\n\n***CRITICAL DIRECTIVE - BLAST RADIUS ANALYSIS***\n"
-        "If graph evidence reveals shared devices or IPs across multiple accounts, you MUST use the `calculate_blast_radius` tool to determine the total financial exposure of the network. "
-        "Always structure your final recommendation with 'CONFIDENCE:', 'REASONING:', 'BLAST RADIUS:' (if applicable), and 'ACTION:'."
-    )
+    sys_msg = SystemMessage(content=f'''You are an elite Agentic Fraud Investigator. Your workflow MUST follow this exact 8-step sequence:
+
+1. TRIGGER: You have been triggered by Case {state["case_id"]} (Txn: {state["target_transaction"]}, Risk: {state["risk_score"]}).
+2. INVESTIGATE: Use `create_and_update_case` to open the case.
+3. GATHER EVIDENCE: Use `get_connected_entities` to search TigerGraph. Use `search_case_memory` for historical RAG. Use `calculate_blast_radius` if rings are found.
+4. ASSESS UNCERTAINTY: Determine if you have enough evidence.
+5. GATHER MORE EVIDENCE: If uncertain, use `request_additional_evidence` (e.g. step-up auth).
+6. TAKE ACTIONS: Use `check_fraud_policy` to verify rules, then explicitly use `execute_resolution_action` to mock-execute the block/freeze/refund via API.
+7. EXPLAIN: Write your final decision.
+8. UPDATE MEMORY: Use `update_case_memory` before concluding.
+
+When finished, output a FINAL block exactly formatted as:
+CONFIDENCE: [High/Medium/Low]
+REASONING: [Explain evidence used, uncertainty handled, and why actions were taken]
+ACTION: [The actions executed]
+''')
     context_msg = HumanMessage(content=
         f"New alert received for Transaction {state.get('target_transaction')} "
         f"with Vesta ML risk score of {state.get('risk_score')}. Begin investigation."

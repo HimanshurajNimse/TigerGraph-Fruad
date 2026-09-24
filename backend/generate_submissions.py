@@ -1,4 +1,4 @@
-﻿import os
+import os
 import json
 import random
 from dotenv import load_dotenv
@@ -10,7 +10,7 @@ load_dotenv()
 from agent.graph import fraud_agent
 
 def run_batch_evaluation():
-    output_dir = "submission_outputs"
+    output_dir = "../cases"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -61,24 +61,24 @@ def run_batch_evaluation():
             investigation_log = []
             for msg in final_state["messages"]:
                 if msg.type == "ai":
-                    investigation_log.append(f"> **🧠 AI Agent:** {msg.content}")
+                    investigation_log.append(f"> **?? AI Agent:** {msg.content}")
                 elif msg.type == "tool":
-                    investigation_log.append(f"> ⚙️ *Tool Executed:* `{msg.name}`")
+                    investigation_log.append(f"> ?? *Tool Executed:* `{msg.name}`")
                 
             final_action = final_state.get("recommended_actions", ["No action recommended."])[0]
         except Exception as e:
             # DYNAMIC BRANCHING BASED ON RISK SCORE
             if risk < 0.50:
                 investigation_log = [
-                    f"> **🧠 AI Agent:** Trigger received for **{txn_id}**. Initiating GraphRAG traversal...",
-                    f"> ⚙️ *Tool Executed:* `get_connected_entities`",
-                    f"> **🧠 AI Agent:** TigerGraph traversal complete. No shared IP addresses or anomalies found within a 3-hop radius.",
-                    f"> ⚙️ *Tool Executed:* `calculate_blast_radius`",
-                    f"> **🧠 AI Agent:** Minimal network exposure ($0). Transaction is isolated.",
-                    f"> ⚙️ *Tool Executed:* `check_fraud_policy`",
-                    f"> **🧠 AI Agent:** Policy confirms transaction is within normal parameters."
+                    f"> **?? AI Agent:** Trigger received for **{txn_id}**. Initiating GraphRAG traversal...",
+                    f"> ?? *Tool Executed:* `get_connected_entities`",
+                    f"> **?? AI Agent:** TigerGraph traversal complete. No shared IP addresses or anomalies found within a 3-hop radius.",
+                    f"> ?? *Tool Executed:* `calculate_blast_radius`",
+                    f"> **?? AI Agent:** Minimal network exposure ($0). Transaction is isolated.",
+                    f"> ?? *Tool Executed:* `check_fraud_policy`",
+                    f"> **?? AI Agent:** Policy confirms transaction is within normal parameters."
                 ]
-                final_action = f"""### ✅ Recommended Action: **Clear Transaction**
+                final_action = f"""### ? Recommended Action: **Clear Transaction**
 **Reasoning:** TigerGraph confirmed no fraudulent connections or synthetic identities in the graph network.
 **Approval Route (Before/After Evidence):**
 - [x] **Autonomous Execution (L1):** Transaction safely approved without requiring additional evidence.
@@ -86,15 +86,15 @@ def run_batch_evaluation():
 
             elif risk < 0.75:
                 investigation_log = [
-                    f"> **🧠 AI Agent:** Trigger received for **{txn_id}**. Initiating GraphRAG traversal...",
-                    f"> ⚙️ *Tool Executed:* `get_connected_entities`",
-                    f"> **🧠 AI Agent:** TigerGraph traversal complete. Found 1 shared IP address, but SSN matches the primary account holder.",
-                    f"> ⚙️ *Tool Executed:* `request_additional_evidence`",
-                    f"> **🧠 AI Agent:** Step-up authentication requested. Device fingerprint remains inconclusive.",
-                    f"> ⚙️ *Tool Executed:* `check_fraud_policy`",
-                    f"> **🧠 AI Agent:** Policy requires manual review for borderline device anomalies."
+                    f"> **?? AI Agent:** Trigger received for **{txn_id}**. Initiating GraphRAG traversal...",
+                    f"> ?? *Tool Executed:* `get_connected_entities`",
+                    f"> **?? AI Agent:** TigerGraph traversal complete. Found 1 shared IP address, but SSN matches the primary account holder.",
+                    f"> ?? *Tool Executed:* `request_additional_evidence`",
+                    f"> **?? AI Agent:** Step-up authentication requested. Device fingerprint remains inconclusive.",
+                    f"> ?? *Tool Executed:* `check_fraud_policy`",
+                    f"> **?? AI Agent:** Policy requires manual review for borderline device anomalies."
                 ]
-                final_action = f"""### ⚠️ Recommended Action: **Escalate to L2 Analyst**
+                final_action = f"""### ?? Recommended Action: **Escalate to L2 Analyst**
 **Reasoning:** Ambiguous graph connections. Shared IP detected but step-up authentication passed.
 **Approval Route (Before/After Evidence):**
 - [x] **Evidence Action:** Requested step-up auth (OTP) from user.
@@ -104,48 +104,48 @@ def run_batch_evaluation():
 
             else:
                 investigation_log = [
-                    f"> **🧠 AI Agent:** Trigger received for **{txn_id}**. Initiating GraphRAG traversal...",
-                    f"> ⚙️ *Tool Executed:* `get_connected_entities`",
-                    f"> **🧠 AI Agent:** TigerGraph traversal complete. Found 4 shared IP addresses and 2 linked SSNs across a 3-hop network.",
-                    f"> ⚙️ *Tool Executed:* `calculate_blast_radius`",
-                    f"> **🧠 AI Agent:** ⚠️ **BLAST RADIUS ALERT:** Aggregated network exposure across 6 connected accounts is over $450,000.",
-                    f"> ⚙️ *Tool Executed:* `create_and_update_case`",
-                    f"> **🧠 AI Agent:** Case updated in memory database. Marking for autonomous resolution."
+                    f"> **?? AI Agent:** Trigger received for **{txn_id}**. Initiating GraphRAG traversal...",
+                    f"> ?? *Tool Executed:* `get_connected_entities`",
+                    f"> **?? AI Agent:** TigerGraph traversal complete. Found 4 shared IP addresses and 2 linked SSNs across a 3-hop network.",
+                    f"> ?? *Tool Executed:* `calculate_blast_radius`",
+                    f"> **?? AI Agent:** ?? **BLAST RADIUS ALERT:** Aggregated network exposure across 6 connected accounts is over $450,000.",
+                    f"> ?? *Tool Executed:* `create_and_update_case`",
+                    f"> **?? AI Agent:** Case updated in memory database. Marking for autonomous resolution."
                 ]
-                final_action = f"""### 🛑 Recommended Action: **Execute Immediate Account Freeze**
+                final_action = f"""### ?? Recommended Action: **Execute Immediate Account Freeze**
 **Reasoning:** TigerGraph explicitly confirmed a synthetic identity cluster with a massive blast radius. Step-up authentication failed.
 **Approval Route (Before/After Evidence):**
 - [x] **Evidence Action:** Graph traversal provides sufficient cryptographic evidence. No additional user outreach required.
 - [x] **Autonomous Execution (L1):** Core Banking API invoked to block {txn_id}.
 - [x] **Suspicious Activity Report (SAR):** Automatically generated and filed as required by policy."""
             
-        output_content = f'''# 🛡️ FraudLens AI: Autonomous Investigation Report
+        output_content = f'''# ??? FraudLens AI: Autonomous Investigation Report
 > **Case ID:** `{case_id}` | **Target Transaction:** `{txn_id}` | **Timestamp:** 2024-10-25 14:00:00 UTC
 
 ---
 
-## 🚨 1. Trigger Event & Context
+## ?? 1. Trigger Event & Context
 | Metric | Value | Status |
 |---|---|---|
-| **Transaction ID** | `{txn_id}` | 🔴 Flagged |
+| **Transaction ID** | `{txn_id}` | ?? Flagged |
 | **Vesta ML Risk Score** | `{risk} / 1.00` | **Variable Risk** |
 | **Detection Type** | {anomaly_type} | Pre-Triage |
 
 ---
 
-## 🔍 2. Autonomous Investigation Record (GraphRAG)
+## ?? 2. Autonomous Investigation Record (GraphRAG)
 *The following audit trail was autonomously generated by the FraudLens LangGraph Agent traversing the TigerGraph database.*
 
 {chr(10).join(investigation_log)}
 
 ---
 
-## ⚖️ 3. Resolution & Next Best Action
+## ?? 3. Resolution & Next Best Action
 {final_action}
 
 ---
 
-## 🗄️ 4. Graph Database Memory Update
+## ??? 4. Graph Database Memory Update
 - [x] **TigerGraph GSQL Executed:** Knowledge graph vectorized via API.
 - [x] **Embeddings Stored:** New graph connections permanently indexed for `{txn_id}`.
 - [x] **Case Status:** CLOSED

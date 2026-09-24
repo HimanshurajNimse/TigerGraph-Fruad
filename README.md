@@ -141,7 +141,7 @@ The LangGraph agent has 8 callable tools that it autonomously decides when to in
 | Requirement | How We Satisfy It |
 |---|---|
 | **Working agent** | LangGraph agent with 8 tools, autonomous investigation loop, real-time SSE streaming. |
-| **Answer file per case** | 20 structured Markdown reports in [`cases/`](./cases/). |
+| **Answer file per case** | 20 strictly formatted JSON reports in [`cases/`](./cases/). |
 | **Case written to graph** | `update_case_memory` tool vectorizes and writes embeddings back to TigerGraph after every case. |
 | **SAR when required** | One-click PDF export containing case ID, evidence chain, and actions taken. |
 | **Next best action before evidence** | Agent recommends L1 (freeze) or L2 (escalate) immediately upon graph traversal. |

@@ -1,5 +1,7 @@
 ﻿# 🔍 FraudLens AI - TigerGraph GraphRAG Agent
 
+**🎥 [Watch the Full Demo Video on YouTube](https://youtu.be/cs-Tc8nTyoc)**
+
 FraudLens AI is an autonomous, AI-driven financial crime investigation agent powered by **TigerGraph** and **GraphRAG**. It drastically reduces the time required to triage, investigate, and resolve complex fraud cases by visualizing multi-hop graph networks and autonomously generating actionable resolution strategies.
 
 ## 🚀 Key Features
